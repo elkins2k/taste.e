@@ -24,7 +24,7 @@
 > ### BONUS
 > |topic|%complete|comments|
 > |:---:|---:|:---|
-> |social authentication|0%|research needed for use in REACT |
-> |upload pics to s3|0%|research needed for use in REACT|
-> |user preferences|0%|exclude ingredients to avoid allergies or simply don't like (quinoa)|
+> |social authentication|100%|login with Google enabled |
+> |upload pics to s3|15%|loaded AWS amplify for react|
+> |user preferences|25%|list of foods to avoid have been added to the data model|
 > |tags|0%| searchable tags like: spicy, gluten free, time (from prep to eat)

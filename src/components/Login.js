@@ -45,14 +45,14 @@ export default function Login(props) {
           />
         </form>
         <p>
-          ...or...
+          ...or login with...
         </p>
         <GoogleLogin
           clientId={GoogleClientId}
-          buttonText="login with Google"
+          buttonText="Google"
           onSuccess={responseGoogle}
           onFailure={responseGoogle}
-          cookiePolicy={'single_host_origin'}
+          // cookiePolicy={'single_host_origin'}
         />
       </div>
     </div>

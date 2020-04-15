@@ -18,6 +18,7 @@ header div {
 
 header div a {
   text-decoration: none;
+  text-decoration-color: black;
 }
 
 .welcome p {
