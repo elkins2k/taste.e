@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { withRouter, Link, Switch, Route, Redirect } from 'react-router-dom'
-import './App.css'
+
 
 import Login from './components/Login'
 import User from './components/User'
-import Chapters from './components/Chapters'
-import ChapterDetails from './components/ChapterDetails'
+import Contents from './components/Contents'
+import ContentDetails from './components/ContentDetails'
 import RecipeDetails from './components/RecipeDetails'
 import NewRecipe from './components/NewRecipe'
 
@@ -18,11 +18,16 @@ export default withRouter(class App extends Component {
     super(props)
     this.state = {
       recipes: [],
-      chapters: [],
+      contents: [],
       users: [],
-      user_id: ''
+      user_id: '',
+      isUserLoggedIn: false
     }
   }
+
+  responseGoogle = response => {
+    this.setState({ userDetails: response.profileObj, isUserLoggedIn: true });
+  };
 
   getRecipes = () => {
     axios
@@ -53,7 +58,7 @@ export default withRouter(class App extends Component {
           recipes: [...prevState.recipes, newRecipe.data]
         }
       ))
-      this.props.history.push(`/chapters/${newRecipe.data.mainProtein}/${newRecipe.data._id}`);
+      this.props.history.push(`/contents/${newRecipe.data.mainProtein}/${newRecipe.data._id}`);
     })
   }
 
@@ -76,7 +81,7 @@ export default withRouter(class App extends Component {
           recipes: res.data
         }
       )
-      this.props.history.push(`/chapters/${proteinId}/${recipeId}`)
+      this.props.history.push(`/contents/${proteinId}/${recipeId}`)
     });
   }
 
@@ -85,7 +90,7 @@ export default withRouter(class App extends Component {
     axios
       .delete(`${apiURL}/recipes/${e.target.id}`)
       .then(res => {
-        this.props.history.push('/chapters')
+        this.props.history.push('/contents')
         this.setState(
           {
             recipes: res.data
@@ -94,25 +99,25 @@ export default withRouter(class App extends Component {
       })
   }
 
-  getChapters = () => {
+  getContents = () => {
     axios
-      .get(`${apiURL}/chapters`)
+      .get(`${apiURL}/contents`)
       .then(res => {
         this.setState(
           {
-            chapters: res.data
+            contents: res.data
           }
         )
       })
   }
 
-  getChapter = () => {
+  getContent = () => {
     axios
-      .get(`${apiURL}/chapters/:id`)
+      .get(`${apiURL}/contents/:id`)
       .then(res => {
         this.setState(
           {
-            chapters: res.data
+            contents: res.data
           }
         )
       })
@@ -238,7 +243,7 @@ export default withRouter(class App extends Component {
 
   componentDidMount() {
     this.getRecipes()
-    this.getChapters()
+    this.getContents()
   }
   
   render() {  
@@ -246,8 +251,8 @@ export default withRouter(class App extends Component {
       <div className="App">
         <header className="App-header">
           <div>
-            <Link to='/'>
-              LogOut
+            <Link to="/contents">
+              Table of Contents
             </Link>
           </div>
           <div>
@@ -256,19 +261,14 @@ export default withRouter(class App extends Component {
             </Link>
           </div>
           <div>
-            <Link to="/chapters">
-              Chapters
+            <Link to='/'>
+              LogOut
             </Link>
-          </div>
-          <div>
-            <Link to="/recipe/new">
-              Add New Recipe
-          </Link>
           </div>
         </header>
         <main>
           <Switch>
-            <Route exact path='/user'
+            <Route exact path='/'
               render={
                 () => <Login
                   users={this.state.users}
@@ -287,23 +287,23 @@ export default withRouter(class App extends Component {
                   handleDelete={this.deleteUser}
                 />
               }
-            /><Route exact path='/chapters'
+            /><Route exact path='/contents'
               render={
-                () => <Chapters
-                  chapters={this.state.chapters}
+                () => <Contents
+                  contents={this.state.contents}
                 />
               }
             />
-            <Route exact path='/chapters/:id'
+            <Route exact path='/contents/:id'
               render={
-                routerProps => <ChapterDetails
+                routerProps => <ContentDetails
                   {...routerProps}
-                  chapters={this.state.chapters}
+                  contents={this.state.contents}
                   recipes={this.state.recipes}
                 />
               }
             />
-            <Route exact path='/chapters/:id/:recipeId'
+            <Route exact path='/contents/:id/:recipeId'
               render={
                 routerProps => <RecipeDetails
                   {...routerProps}
@@ -312,7 +312,7 @@ export default withRouter(class App extends Component {
                   currentUser={this.state.currentUser}
                   handleUpdateRecipe={this.putRecipe}
                   handleFormChange={this.handleFormChange}
-                  chapters={this.state.chapters}
+                  contents={this.state.contents}
                 />
               }
             />
@@ -326,7 +326,7 @@ export default withRouter(class App extends Component {
             />
             <Route path='*'
               render={
-                () => <Redirect to='/user' />
+                () => <Redirect to='/' />
               }
             />
           </Switch>

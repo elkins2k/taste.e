@@ -12,10 +12,10 @@ export default function ContentDetails(props) {
         </div>
       )
     }
+    return (
+      <div>
+        {matchingRecipes}
+      </div>
+    )
   })
-  return (
-    <div>
-      {matchingRecipes}
-    </div>
-  )
 }

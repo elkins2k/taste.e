@@ -6,12 +6,14 @@ export default function User(props) {
   return (
     <div className='userDetail'>
       <p>
-        first name: <h2>{userDetail.firstName}</h2>
+        Please verify your information before proceeding
       </p>
-      <p>
-        last name: <h2>{userDetail.lastName}</h2>
-      </p>
-      <p>change your account information here, if necessary:</p>
+      <h3>
+        first name: {userDetail.firstName}
+      <br></br>
+        last name: {userDetail.lastName}
+      </h3>
+      <p>if necessary, change your account information here:</p>
       <form className='put user name change'
         onSubmit={props.handlePutUser}
         onChange={props.handleFormChange}
@@ -37,7 +39,7 @@ export default function User(props) {
           id={userDetail._id}
           onClick={props.handleDelete}
         >
-          Delete
+          ( delete )
         </button>
       </form>
     </div>
