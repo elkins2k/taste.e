@@ -20,14 +20,9 @@ export default withRouter(class App extends Component {
       recipes: [],
       contents: [],
       users: [],
-      user_id: '',
-      isUserLoggedIn: false
+      user_id: ''
     }
   }
-
-  responseGoogle = response => {
-    this.setState({ userDetails: response.profileObj, isUserLoggedIn: true });
-  };
 
   getRecipes = () => {
     axios
@@ -150,6 +145,25 @@ export default withRouter(class App extends Component {
       .catch(error => console.log('error', error))
   }
 
+  responseGoogle = (response) => {
+    axios({
+      method: 'post',
+      url: `${apiURL}/users`,
+      data: {
+        email: response.profileObj.email
+      }
+    })
+    .then(res => {
+      console.log(res)
+      this.setState({
+        users: res.data,
+        user_id: res.data[0]._id,
+        currentUser: res.data[0].email
+      })
+      this.props.history.push(`/user/${this.state.user_id}`)
+    })
+  }
+   
   postUser = (e) => {
     e.preventDefault()
     axios({
@@ -274,6 +288,7 @@ export default withRouter(class App extends Component {
                   users={this.state.users}
                   handleSubmit={this.postUser}
                   handleFormChange={this.handleFormChange}
+                  responseGoogle={this.responseGoogle}
                 />
               }
             />

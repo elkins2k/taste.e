@@ -3,10 +3,6 @@ import GoogleLogin from 'react-google-login';
 
 const GoogleClientId = '341072380497-1uq27kjbd4joe4750lu9uqogh18ocu71.apps.googleusercontent.com'
 
-const responseGoogle = (response) => {
-  console.log(response);
-}
- 
 export default function Login(props) {
   return (
     <div className="home">
@@ -50,9 +46,9 @@ export default function Login(props) {
         <GoogleLogin
           clientId={GoogleClientId}
           buttonText="Google"
-          onSuccess={responseGoogle}
-          onFailure={responseGoogle}
-          // cookiePolicy={'single_host_origin'}
+          onSuccess={props.responseGoogle}
+          onFailure={props.responseGoogle}
+          cookiePolicy={'single_host_origin'}
         />
       </div>
     </div>
