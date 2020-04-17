@@ -5,7 +5,8 @@ export default function RecipeDetails (props) {
   const recipeDetail = props.recipes.find(recipe => 
     recipe._id === props.match.params.recipeId
   )
-  console.log(props)
+  console.log ('props', props)
+  console.log ('recipeDetail', recipeDetail)
   if (props.currentUser === recipeDetail.submittedBy || !recipeDetail.submittedBy) {
     return (
       <div>
@@ -13,10 +14,10 @@ export default function RecipeDetails (props) {
           onSubmit={props.handleUpdateRecipe}
           onChange={props.handleFormChange}
           id={recipeDetail._id}
-          data-heading-id={recipeDetail.heading}
+          data-heading-id={recipeDetail.heading._id}
         >
           ToC: 
-          <Link to={`/contents/${recipeDetail.heading}`}>
+          <Link to={`/contents/${recipeDetail.heading._id}`}>
             {recipeDetail.heading.heading}
           </Link> >
            Name: <input type="text" name="newRecipeName" defaultValue={recipeDetail.name} />          
@@ -44,11 +45,12 @@ export default function RecipeDetails (props) {
     return (
       <div>
         <h2>
+        ToC: 
+          <Link to={`/contents/${recipeDetail.heading._id}`}>
+            {recipeDetail.heading.heading}
+          </Link> >
           Name: {recipeDetail.name}
         </h2>
-        <h3>
-          ToC Heading: {recipeDetail.heading.heading}
-        </h3>
         <h3>
           Ingredients: {recipeDetail.ingredients}
         </h3>

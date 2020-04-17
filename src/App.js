@@ -19,7 +19,8 @@ export default withRouter(class App extends Component {
       recipes: [],
       contents: [],
       users: [],
-      user_id: ''
+      user_id: '',
+      apiLoaded:false
     }
   }
 
@@ -29,9 +30,11 @@ export default withRouter(class App extends Component {
       .then(res => {
         this.setState(
           {
-            recipes: res.data
+            recipes: res.data,
+            apiLoaded:true
           }
         )
+      return null
       })
   }
 
@@ -47,20 +50,18 @@ export default withRouter(class App extends Component {
       }
     })
     .then(newRecipe => {
-      console.log(newRecipe)
       this.setState(prevState => (
-        {
-          recipes: [...prevState.recipes, newRecipe.data.recipe],
-          newContents: newRecipe.data.newContents
-        }
-      ))
-      this.props.history.push(`/contents/${newRecipe.data.newContents._id}/${newRecipe.data.recipe._id}`);
-    })
+          {
+            recipes: [...prevState.recipes, newRecipe.data],
+          }
+        ))
+      this.props.history.push(`/contents/${newRecipe.data.heading._id}/${newRecipe.data._id}`)
+      })
   }
 
   putRecipe = (e) => {
     e.preventDefault()
-    let proteinId = e.target.getAttribute('data-protein-id')
+    let headingId = e.target.getAttribute('data-heading-id')
     let recipeId = e.target.id
     axios({
       method: "PUT",
@@ -77,7 +78,7 @@ export default withRouter(class App extends Component {
           recipes: res.data
         }
       )
-      this.props.history.push(`/contents/${proteinId}/${recipeId}`)
+      this.props.history.push(`/contents/${headingId}/${recipeId}`)
     });
   }
 
@@ -430,7 +431,7 @@ export default withRouter(class App extends Component {
                 />
               }
             />
-            <Route exact path='/contents/:id/:recipeId'
+            {this.state.apiLoaded && <Route exact path='/contents/:id/:recipeId'
               render={
                 routerProps => <RecipeDetails
                   {...routerProps}
@@ -443,7 +444,7 @@ export default withRouter(class App extends Component {
                   contents={this.state.contents}
                 />
               }
-            />
+            />}
             <Route exact path='/recipe/new'
               render={
                 () => <NewRecipe
