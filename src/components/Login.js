@@ -1,7 +1,7 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
 
-const GoogleClientId = '341072380497-1uq27kjbd4joe4750lu9uqogh18ocu71.apps.googleusercontent.com'
+const GoogleLoginClientId = process.env.GOOGLE_LOGIN_CLIENT_ID ||'341072380497-1uq27kjbd4joe4750lu9uqogh18ocu71.apps.googleusercontent.com'
 
 export default function Login(props) {
   return (
@@ -44,7 +44,7 @@ export default function Login(props) {
           ...or login with...
         </p>
         <GoogleLogin
-          clientId={GoogleClientId}
+          clientId={GoogleLoginClientId}
           buttonText="Google"
           onSuccess={props.responseGoogle}
           onFailure={props.responseGoogle}

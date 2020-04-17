@@ -9,7 +9,7 @@ export default function NewRecipe(props) {
       >
         <input type="text" name="newRecipeName" placeholder="recipe name" />
         <p></p>
-        <input type="text" name="newMainProtein" placeholder="protein/chapter heading" />
+        <input type="text" name="newHeading" placeholder="table of contents heading" />
         <p></p>
         <input type="Submit" />
       </form>

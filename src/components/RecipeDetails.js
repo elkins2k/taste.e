@@ -1,11 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 
 export default function RecipeDetails (props) {
   const recipeDetail = props.recipes.find(recipe => 
     recipe._id === props.match.params.recipeId
   )
-  const proteinDetail = props.chapters.find(protein =>
-    protein._id === props.match.params.id)
+  console.log(props)
   if (props.currentUser === recipeDetail.submittedBy || !recipeDetail.submittedBy) {
     return (
       <div>
@@ -13,11 +13,13 @@ export default function RecipeDetails (props) {
           onSubmit={props.handleUpdateRecipe}
           onChange={props.handleFormChange}
           id={recipeDetail._id}
-          data-protein-id={recipeDetail.mainProtein}
+          data-heading-id={recipeDetail.heading}
         >
-          Name: <input type="text" name="newRecipeName" defaultValue={recipeDetail.name} />
-          <p></p>
-          Main Protein: {proteinDetail.mainProtein}
+          ToC: 
+          <Link to={`/contents/${recipeDetail.heading}`}>
+            {recipeDetail.heading.heading}
+          </Link> >
+           Name: <input type="text" name="newRecipeName" defaultValue={recipeDetail.name} />          
           <p></p>
           Ingredients: <textarea name="newIngredients" rows='20' columns='100' placeholder='Enter your list of ingredients here...' defaultValue={recipeDetail.ingredients}></textarea> 
           <p></p>
@@ -45,7 +47,7 @@ export default function RecipeDetails (props) {
           Name: {recipeDetail.name}
         </h2>
         <h3>
-          Main Protein: {proteinDetail.mainProtein}
+          ToC Heading: {recipeDetail.heading.heading}
         </h3>
         <h3>
           Ingredients: {recipeDetail.ingredients}
