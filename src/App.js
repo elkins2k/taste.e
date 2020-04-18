@@ -8,6 +8,7 @@ import Contents from './components/Contents'
 import ContentDetails from './components/ContentDetails'
 import RecipeDetails from './components/RecipeDetails'
 import NewRecipe from './components/NewRecipe'
+import Logout from './components/Logout'
 
 const corsProxy = 'https://cors-anywhere.herokuapp.com/'
 const apiURL = process.env.REACT_APP_BACKEND_APP_URL || 'http://localhost:8080/api' || corsProxy + 'https://taste-e-recipe-api.herokuapp.com/api' 
@@ -368,6 +369,17 @@ export default withRouter(class App extends Component {
     )
   }
 
+  handleLogout = () => {
+    if (this.state.currentUser !== '') {
+      this.setState(
+        {
+          currentUser:''
+        }
+      )
+    }
+    this.props.history.push('/')
+  }
+
   componentDidMount() {
     this.getRecipes()
     this.getContents()
@@ -388,13 +400,20 @@ export default withRouter(class App extends Component {
             </Link>
           </div>
           <div>
-            <Link to='/'>
+            <Link to='/logout'>
               LogOut
             </Link>
           </div>
         </header>
         <main>
           <Switch>
+            <Route exact path='/logout'
+              render={
+                () => <Logout
+                  handleLogout={this.handleLogout}
+                />
+              }
+            />
             <Route exact path='/'
               render={
                 () => <Login
