@@ -162,19 +162,19 @@ export default withRouter(class App extends Component {
       })
   }
 
-  getRecipes = () => {
+  getUsers = () => {
     axios
       .get(`${apiURL}/users`)
       .then(res => {
         this.setState(
           {
-            currentRecipe: res.data
+            currentUser: res.data
           }
         )
       })
   }
 
-  getRecipe = (e) => {
+  getUser = (e) => {
     e.preventDefault()
     axios
       .get(`${apiURL}/users/${e.target.id}`)
@@ -182,7 +182,7 @@ export default withRouter(class App extends Component {
         this.props.history.push('/')
         this.setState(
           {
-            currentRecipe: res.data
+            currentUser: res.data
           }
         )
       })
