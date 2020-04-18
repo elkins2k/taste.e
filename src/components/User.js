@@ -24,7 +24,8 @@ export default function User(props) {
           name='newFirstName'
           defaultValue={userDetail.firstName}
         /> 
-        |  last name: <input
+        <br></br>
+        last name: <input
           type='text'
           name='newLastName'
           defaultValue={userDetail.lastName}

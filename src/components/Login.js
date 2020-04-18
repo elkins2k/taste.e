@@ -11,13 +11,13 @@ export default function Login(props) {
           Welcome!
         </h1>
         <p>
-          Much like your grandmother's box of index cards she kept in her kitchen filled with recipes that have been handed down through the generations or passed around at church potlucks, this site is intended as a virtual recipe sharing forum.
+          Much like your grandmother's kitchen box of index cards filled with recipes that have been handed down through the generations and/or passed around at church potlucks, this site is a virtual version of that box!
         </p>
         <p>
-          Looking for a recipe with specific ingredients? Just want to browse through a specific category to find a new recipe to try? Help yourself. However, the real fun begins when you create an account and start sharing grandma's favorite dish that was always a hit at family gatherings.
+          Just want to browse through a specific category to find a new recipe to try? Help yourself. Just click on "Table of Contents" above.
         </p>
         <p>
-          Simply enter your email on the right and you can start sharing your own favorite recipes or comment on other recipes in our database!
+          However, if you login, you can start sharing your own favorite recipes or comment on other recipes in our database!
         </p>
         <h2>
           Happy cooking!!

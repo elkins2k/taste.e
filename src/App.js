@@ -11,7 +11,7 @@ import NewRecipe from './components/NewRecipe'
 import Logout from './components/Logout'
 
 const corsProxy = 'https://cors-anywhere.herokuapp.com/'
-const apiURL = process.env.REACT_APP_BACKEND_APP_URL || 'http://localhost:8080/api' || corsProxy + 'https://taste-e-recipe-api.herokuapp.com/api' 
+const apiURL = corsProxy + process.env.REACT_APP_BACKEND_APP_URL || 'http://localhost:8080/api' || corsProxy + 'https://taste-e-recipe-api.herokuapp.com/api' 
 
 export default withRouter(class App extends Component {
   constructor(props) {
@@ -70,7 +70,7 @@ export default withRouter(class App extends Component {
       data: {
         name: this.state.newRecipeName,
         directions: this.state.newDirections,
-        ingredients: this.state.newIngredients
+        heading:headingId
       }
     })
     .then(res => {
@@ -83,18 +83,59 @@ export default withRouter(class App extends Component {
     });
   }
 
+  handleNewIngredient = (e) => {
+    e.preventDefault()
+    let headingId = e.target.getAttribute('data-heading-id')
+    let recipeId = e.target.id
+    axios ({
+      method: "POST",
+      url: `${apiURL}/${e.target.id}/new-ingredient/`,
+      data: {
+        description: this.state.newIngredientDescription
+      }
+    })
+    .then ( () => {
+      this.setState (
+        {
+          newIngredientDescription: ''
+        }
+      )
+      this.getRecipes();
+      this.props.history.push(`/contents/${headingId}/${recipeId}`);
+    });
+  };
+
   deleteRecipe = (e) => {
     e.preventDefault()
+    let headingId = e.target.getAttribute('data-heading-id')
     axios
       .delete(`${apiURL}/recipes/${e.target.id}`)
       .then(res => {
-        this.props.history.push('/contents')
         this.setState(
           {
             recipes: res.data
           }
         )
+        this.props.history.push(`/contents/${headingId}`)
       })
+  }
+
+  deleteIngredient = (e) => {
+    let headingId = e.target.getAttribute('data-heading-id')
+    let recipeId = e.target.id
+    e.preventDefault();
+    let ingredientId = e.target.getAttribute('data-ingredient-id');
+    axios({
+      method: "PUT",
+      url: `${apiURL}/${e.target.id}/update-ingredient/${ingredientId}`,
+      data: {
+        description: this.state.newIngredientDescription
+      }
+    })
+    .then ( user => {
+      this.getRecipes();
+      this.props.history.push(`/contents/${headingId}/${recipeId}`);
+    })
   }
 
   getContents = () => {
@@ -121,19 +162,19 @@ export default withRouter(class App extends Component {
       })
   }
 
-  getUsers = () => {
+  getRecipes = () => {
     axios
       .get(`${apiURL}/users`)
       .then(res => {
         this.setState(
           {
-            currentUser: res.data
+            currentRecipe: res.data
           }
         )
       })
   }
 
-  getUser = (e) => {
+  getRecipe = (e) => {
     e.preventDefault()
     axios
       .get(`${apiURL}/users/${e.target.id}`)
@@ -141,7 +182,7 @@ export default withRouter(class App extends Component {
         this.props.history.push('/')
         this.setState(
           {
-            currentUser: res.data
+            currentRecipe: res.data
           }
         )
       })
@@ -381,8 +422,8 @@ export default withRouter(class App extends Component {
   }
 
   componentDidMount() {
-    this.getRecipes()
     this.getContents()
+    this.getRecipes()
   }
   
   render() {  
@@ -454,13 +495,15 @@ export default withRouter(class App extends Component {
               render={
                 routerProps => <RecipeDetails
                   {...routerProps}
-                  handleDelete={this.deleteRecipe}
+                  handleDeleteRecipe={this.deleteRecipe}
                   recipes={this.state.recipes}
                   newContents={this.state.newContents}
-                  currentUser={this.state.currentUser}
-                  handleUpdateRecipe={this.putRecipe}
+                  currentRecipe={this.state.currentRecipe}
+                  handlePutRecipe={this.putRecipe}
                   handleFormChange={this.handleFormChange}
                   contents={this.state.contents}
+                  handleNewIngredient={this.handleNewIngredient}
+                  deleteIngredient={this.deleteIngredient}
                 />
               }
             />}
@@ -468,7 +511,7 @@ export default withRouter(class App extends Component {
               render={
                 () => <NewRecipe
                   handleFormChange={this.handleFormChange}
-                  handleNewRecipe={this.postRecipe}
+                  handlePostRecipe={this.postRecipe}
                 />
               }
             />

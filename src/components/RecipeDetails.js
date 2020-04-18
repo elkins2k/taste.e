@@ -5,13 +5,11 @@ export default function RecipeDetails (props) {
   const recipeDetail = props.recipes.find(recipe => 
     recipe._id === props.match.params.recipeId
   )
-  console.log ('props', props)
-  console.log ('recipeDetail', recipeDetail)
   if (props.currentUser === recipeDetail.submittedBy || !recipeDetail.submittedBy) {
     return (
       <div>
         <form
-          onSubmit={props.handleUpdateRecipe}
+          onSubmit={props.handlePutRecipe}
           onChange={props.handleFormChange}
           id={recipeDetail._id}
           data-heading-id={recipeDetail.heading._id}
@@ -32,7 +30,7 @@ export default function RecipeDetails (props) {
         <p></p>
         <button 
           id={recipeDetail._id}
-          onClick={props.handleDelete}
+          onClick={props.handleDeleteRecipe}
         >
           Delete Recipe
         </button>
