@@ -11,7 +11,7 @@ import NewRecipe from './components/NewRecipe'
 import Logout from './components/Logout'
 
 const corsProxy = 'https://cors-anywhere.herokuapp.com/'
-const apiURL = process.env.REACT_APP_BACKEND_APP_URL || 'http://localhost:8080/api' || corsProxy + 'https://taste-e-recipe-api.herokuapp.com/api' 
+const apiURL = process.env.REACT_APP_BACKEND_APP_URL || corsProxy + 'https://taste-e-recipe-api.herokuapp.com/api' || 'http://localhost:8080/api' 
 
 export default withRouter(class App extends Component {
   constructor(props) {
@@ -33,7 +33,6 @@ export default withRouter(class App extends Component {
             recipes: res.data
           }
         )
-      return null
       })
   }
 
@@ -114,17 +113,16 @@ export default withRouter(class App extends Component {
             recipes: res.data
           }
         )
+        this.getRecipes()
         this.props.history.push(`/contents`)
       })
   }
 
   deleteIngredient = (e) => {
-    console.log('deleteIngredient', e.target)
     // e.preventDefault();
     let headingId = e.target.getAttribute('data-heading-id')
     let recipeId = e.target.getAttribute('recipe-id')
     let ingredientId = e.target.getAttribute('data-ingredient-id')
-    console.log (headingId, ingredientId, headingId)
     axios
       .delete(`${apiURL}/recipes/${recipeId}/delete-ingredient/${ingredientId}`)
       .then ( res => {
@@ -401,7 +399,6 @@ export default withRouter(class App extends Component {
   }
   
   handleFormChange = (e) => {
-    console.log(e.target)
     this.setState(
       {
         [e.target.name]: e.target.value
