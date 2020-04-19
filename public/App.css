@@ -102,3 +102,16 @@ footer, footer a {
   text-decoration-color: black;
   border-top: 1px solid black;
 }
+
+.recipe-details {
+  display: inline-flex;
+  flex-direction: row;
+}
+.recipe-left {
+  width: 49vw;
+  align-content: right;
+}
+.recipe-ingredients {
+  width: 49vw;
+  align-self: left;
+}

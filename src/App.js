@@ -11,7 +11,7 @@ import NewRecipe from './components/NewRecipe'
 import Logout from './components/Logout'
 
 const corsProxy = 'https://cors-anywhere.herokuapp.com/'
-const apiURL = corsProxy + process.env.REACT_APP_BACKEND_APP_URL || 'http://localhost:8080/api' || corsProxy + 'https://taste-e-recipe-api.herokuapp.com/api' 
+const apiURL = process.env.REACT_APP_BACKEND_APP_URL || 'http://localhost:8080/api' || corsProxy + 'https://taste-e-recipe-api.herokuapp.com/api' 
 
 export default withRouter(class App extends Component {
   constructor(props) {
@@ -20,8 +20,7 @@ export default withRouter(class App extends Component {
       recipes: [],
       contents: [],
       users: [],
-      user_id: '',
-      apiLoaded:false
+      user_id: ''
     }
   }
 
@@ -31,8 +30,7 @@ export default withRouter(class App extends Component {
       .then(res => {
         this.setState(
           {
-            recipes: res.data,
-            apiLoaded:true
+            recipes: res.data
           }
         )
       return null
@@ -89,15 +87,15 @@ export default withRouter(class App extends Component {
     let recipeId = e.target.id
     axios ({
       method: "POST",
-      url: `${apiURL}/${e.target.id}/new-ingredient/`,
+      url: `${apiURL}/recipes/${e.target.id}/new-ingredient/`,
       data: {
-        description: this.state.newIngredientDescription
+        ingredient: this.state.newIngredient
       }
     })
     .then ( () => {
       this.setState (
         {
-          newIngredientDescription: ''
+          newIngredient: ''
         }
       )
       this.getRecipes();
@@ -107,7 +105,7 @@ export default withRouter(class App extends Component {
 
   deleteRecipe = (e) => {
     e.preventDefault()
-    let headingId = e.target.getAttribute('data-heading-id')
+    // let headingId = e.target.getAttribute('data-heading-id')
     axios
       .delete(`${apiURL}/recipes/${e.target.id}`)
       .then(res => {
@@ -116,26 +114,27 @@ export default withRouter(class App extends Component {
             recipes: res.data
           }
         )
-        this.props.history.push(`/contents/${headingId}`)
+        this.props.history.push(`/contents`)
       })
   }
 
   deleteIngredient = (e) => {
+    console.log('deleteIngredient', e.target)
+    // e.preventDefault();
     let headingId = e.target.getAttribute('data-heading-id')
-    let recipeId = e.target.id
-    e.preventDefault();
-    let ingredientId = e.target.getAttribute('data-ingredient-id');
-    axios({
-      method: "PUT",
-      url: `${apiURL}/${e.target.id}/update-ingredient/${ingredientId}`,
-      data: {
-        description: this.state.newIngredientDescription
-      }
-    })
-    .then ( user => {
-      this.getRecipes();
-      this.props.history.push(`/contents/${headingId}/${recipeId}`);
-    })
+    let recipeId = e.target.getAttribute('recipe-id')
+    let ingredientId = e.target.getAttribute('data-ingredient-id')
+    console.log (headingId, ingredientId, headingId)
+    axios
+      .delete(`${apiURL}/recipes/${recipeId}/delete-ingredient/${ingredientId}`)
+      .then ( res => {
+        this.setState(
+          {
+            recipes: res.data
+          }
+        )
+        this.props.history.push(`/contents/${headingId}/${recipeId}`);
+      })
   }
 
   getContents = () => {
@@ -402,7 +401,7 @@ export default withRouter(class App extends Component {
   }
   
   handleFormChange = (e) => {
-    e.preventDefault()
+    console.log(e.target)
     this.setState(
       {
         [e.target.name]: e.target.value
@@ -491,22 +490,23 @@ export default withRouter(class App extends Component {
                 />
               }
             />
-            {this.state.apiLoaded && <Route exact path='/contents/:id/:recipeId'
+            <Route exact path='/contents/:id/:recipeId'
               render={
                 routerProps => <RecipeDetails
                   {...routerProps}
                   handleDeleteRecipe={this.deleteRecipe}
                   recipes={this.state.recipes}
                   newContents={this.state.newContents}
-                  currentRecipe={this.state.currentRecipe}
+                  currentUser={this.state.currentUser}
                   handlePutRecipe={this.putRecipe}
                   handleFormChange={this.handleFormChange}
                   contents={this.state.contents}
                   handleNewIngredient={this.handleNewIngredient}
+                  newIngredientDescription={this.state.newIngredientDescription}
                   deleteIngredient={this.deleteIngredient}
                 />
               }
-            />}
+            />
             <Route exact path='/recipe/new'
               render={
                 () => <NewRecipe
