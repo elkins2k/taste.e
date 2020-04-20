@@ -10,9 +10,7 @@ import RecipeDetails from './components/RecipeDetails'
 import NewRecipe from './components/NewRecipe'
 import Logout from './components/Logout'
 
-// const corsProxy = 'https://cors-anywhere.herokuapp.com/'
-// const apiURL = process.env.REACT_APP_BACKEND_APP_URL || corsProxy+'https://taste-e-recipe-api.herokuapp.com/api' 
-const apiURL = 'http://localhost:8080/api' 
+const apiURL = process.env.REACT_APP_BACKEND_APP_URL || 'http://localhost:8080/api' 
 
 export default withRouter(class App extends Component {
   constructor(props) {
