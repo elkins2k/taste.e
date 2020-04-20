@@ -3,14 +3,13 @@ import { Link } from 'react-router-dom'
 
 export default function Contents(props) {
   const allContents = props.contents.map ( (content,index) => {
+    if (content.heading === '') {content.heading = '-empty-'}
     return(
-      
         <h3 key={index}>
           <Link to = {`/contents/${content._id}`}>
             {content.heading}
           </Link>
         </h3>
-     
     )
   })
   return (

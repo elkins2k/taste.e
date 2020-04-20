@@ -13,7 +13,8 @@ export default function RecipeDetails (props) {
         key={index}
         ingredient={ingredient}
         recipeId={recipeDetail._id}
-        deleteIngredient={props.deleteIngredient}
+        handleDeleteIngredient={props.handleDeleteIngredient}
+        submittedBy={recipeDetail.submittedBy}
       />
     )
     listOfIngredients.push(ingredientItem)
@@ -58,7 +59,7 @@ export default function RecipeDetails (props) {
           <input
               type="text"
               name="newIngredient"
-              placeholder="new ingredient and measurement (ex: 4Cups flour)"
+              placeholder="(ex: 4Cups flour)"
               value={props.newIngredient}
             /> <input type="submit" />
           </form>
@@ -76,9 +77,9 @@ export default function RecipeDetails (props) {
         <h2>
         ToC: 
           <Link to={`/contents/${recipeDetail.heading._id}`}>
-            {recipeDetail.heading.heading}
-          </Link> >
-          Name: {recipeDetail.name}
+            {' '}{recipeDetail.heading.heading}{' '}
+          </Link>
+          Recipe Name: {recipeDetail.name}
         </h2>
         <h3>
           Ingredients: {listOfIngredients}

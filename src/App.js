@@ -222,6 +222,8 @@ export default withRouter(class App extends Component {
       this.setState ( prevState => ({
         recipes: [...prevState.recipes, res.data],
       }))
+      this.getContents()
+      this.getRecipes()
       this.props.history.push (`/contents/${res.data.heading._id}/${res.data._id}`)
     })
   }
@@ -254,73 +256,63 @@ export default withRouter(class App extends Component {
     })
   }
 
-  deleteRecipe = (e) => {
+  deleteRecipe = (e) => {  //working
     e.preventDefault ()
     axios.delete (`${apiURL}/recipes/${e.target.id}`)
       .then ( res => {
+        this.props.history.push(`/contents`)
         this.setState ({
           recipes: res.data
         })
-        this.props.history.push(`/contents`)
+        
       })
   }
 
-  // postIngredient = (e) => {
-  //   // e.preventDefault ()
-  //   let headingId = e.target.getAttribute('data-heading-id')
-  //   let recipeId = e.target.id
-  //   axios ({
-  //     method: "POST",
-  //     url: `${apiURL}/recipes/${e.target.id}/new-ingredient`,
-  //     data: {
-  //       ingredient: this.state.newIngredient
-  //     }
-  //   }).then ( res => {
-  //     this.setState ({
-  //       // recipes: res.data,
-  //       newIngredient: ''
-  //     })
-  //     // this.props.history.push(`/contents/${headingId}/${recipeId}`);
-  //   })
-  // }
+  postIngredient = (e) => {  //working
+    e.preventDefault ()
+    e.persist()
+    let headingId = e.target.getAttribute('data-heading-id')
+    let recipeId = e.target.id
+    axios.post (`${apiURL}/recipes/${e.target.id}/new-ingredient`, {
+        ingredient: this.state.newIngredient
+    }).then ( res => {
+      e.target.reset()
+      this.setState ({
+        newIngredient: ''
+      })
+      this.getRecipes()
+      this.props.history.push(`/contents/${headingId}/${recipeId}`);
+    })
+  }
 
-  // deleteIngredient = (e) => {
-    // e.preventDefault();
-  //   let headingId = e.target.getAttribute('data-heading-id')
-  //   let recipeId = e.target.getAttribute('recipe-id')
-  //   let ingredientId = e.target.getAttribute('data-ingredient-id')
-  //   axios
-  //     .delete(`${apiURL}/recipes/${recipeId}/delete-ingredient/${ingredientId}`)
-  //     .then ( res => {
-  //       this.setState(
-  //         {
-  //           recipes: res.data
-  //         }
-  //       )
-  //       this.props.history.push(`/contents/${headingId}/${recipeId}`);
-  //     })
-  // }
+  deleteIngredient = (e) => {  //working
+    e.preventDefault();
+    let headingId = e.target.getAttribute('data-heading-id')
+    let recipeId = e.target.getAttribute('recipe-id')
+    let ingredientId = e.target.getAttribute('data-ingredient-id')
+    axios.delete(`${apiURL}/recipes/${recipeId}/delete-ingredient/${ingredientId}`)
+      .then ( res => {
+        this.setState({
+          recipes: res.data
+        })
+        this.getRecipes()
+        this.props.history.push(`/contents/${headingId}/${recipeId}`);
+      })
+  }
 
-  handleFormChange = (e) => {
-    console.log(e.target.name, e.target.value)
+  handleFormChange = (e) => {  //working
     this.setState ({
       [e.target.name]: e.target.value
     })
   }
 
-  handleLogout = () => {
+  handleLogout = () => { //working
     if (this.state.currentUser !== '') {
       this.setState({
         currentUser:''
       })
     }
     this.props.history.push('/')
-  }
-
-  handleContentHeading = (newHeading) => {
-    this.setState ({
-      currentHeading: newHeading
-    })
   }
 
   componentDidMount () {
