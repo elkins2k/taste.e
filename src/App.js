@@ -52,7 +52,6 @@ export default withRouter(class App extends Component {
   // }
 
   responseGoogle = (response) => {  //working
-    console.log(response)
     axios.post (`${apiURL}/users`,{
       email: response.profileObj.email
     }).then ( res => {
