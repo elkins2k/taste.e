@@ -3,10 +3,10 @@ import Ingredient from './Ingredient'
 import { Link } from 'react-router-dom'
 
 export default function RecipeDetails (props) {
-  const recipeDetail = props.recipes.find(recipe => 
-    recipe._id === props.match.params.recipeId
-  )
   let listOfIngredients =[]
+  const recipeDetail = props.recipes.find ( recipe => 
+      recipe._id === props.match.params.recipeId
+  )
   recipeDetail.ingredients.forEach( (ingredient,index) => {
     let ingredientItem = (
       <Ingredient
@@ -22,7 +22,7 @@ export default function RecipeDetails (props) {
     return (
       <div className = "recipe-details">
         <div className="recipe-left">
-          <form
+          <form 
             onSubmit={props.handlePutRecipe}
             onChange={props.handleFormChange}
             id={recipeDetail._id}
@@ -50,7 +50,7 @@ export default function RecipeDetails (props) {
         </div>
         <div className="recipe-ingredients">
           <form
-            onSubmit={props.handleNewIngredient}
+            onSubmit={props.handlePostIngredient}
             onChange={props.handleFormChange}
             id={recipeDetail._id}
             data-heading-id={recipeDetail.heading._id}
@@ -59,7 +59,7 @@ export default function RecipeDetails (props) {
               type="text"
               name="newIngredient"
               placeholder="new ingredient and measurement (ex: 4Cups flour)"
-              // value={props.newIngredientDescription}
+              value={props.newIngredient}
             /> <input type="submit" />
           </form>
           Ingredients:

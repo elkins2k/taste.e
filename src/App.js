@@ -10,8 +10,9 @@ import RecipeDetails from './components/RecipeDetails'
 import NewRecipe from './components/NewRecipe'
 import Logout from './components/Logout'
 
-const corsProxy = 'https://cors-anywhere.herokuapp.com/'
-const apiURL = process.env.REACT_APP_BACKEND_APP_URL || corsProxy + 'https://taste-e-recipe-api.herokuapp.com/api' || 'http://localhost:8080/api' 
+// const corsProxy = 'https://cors-anywhere.herokuapp.com/'
+// const apiURL = process.env.REACT_APP_BACKEND_APP_URL || corsProxy+'https://taste-e-recipe-api.herokuapp.com/api' 
+const apiURL = 'http://localhost:8080/api' 
 
 export default withRouter(class App extends Component {
   constructor(props) {
@@ -19,183 +20,44 @@ export default withRouter(class App extends Component {
     this.state = {
       recipes: [],
       contents: [],
+      currentHeading:'',
       users: [],
       user_id: ''
     }
   }
 
-  getRecipes = () => {
-    axios
-      .get(`${apiURL}/recipes`)
-      .then(res => {
-        this.setState(
-          {
-            recipes: res.data
-          }
-        )
-      })
-  }
+  // getUsers = () => {
+  //   axios
+  //     .get(`${apiURL}/users`)
+  //     .then(res => {
+  //       this.setState(
+  //         {
+  //           currentUser: res.data
+  //         }
+  //       )
+  //     })
+  // }
 
-  postRecipe = (e) => {
-    e.preventDefault()
-    axios({
-      method: "POST",
-      url: `${apiURL}/recipes`,
-      data: {
-        name: this.state.newRecipeName,
-        heading: this.state.newHeading,
-        submittedBy: this.state.currentUser
-      }
-    })
-    .then(newRecipe => {
-      this.setState(prevState => (
-          {
-            recipes: [...prevState.recipes, newRecipe.data],
-          }
-        ))
-      this.props.history.push(`/contents/${newRecipe.data.heading._id}/${newRecipe.data._id}`)
-      })
-  }
+  // getUser = (e) => {
+  //   e.preventDefault()
+  //   axios
+  //     .get(`${apiURL}/users/${e.target.id}`)
+  //     .then(res => {
+  //       this.props.history.push('/')
+  //       this.setState(
+  //         {
+  //           currentUser: res.data
+  //         }
+  //       )
+  //     })
+  //     .catch(error => console.log('error', error))
+  // }
 
-  putRecipe = (e) => {
-    e.preventDefault()
-    let headingId = e.target.getAttribute('data-heading-id')
-    let recipeId = e.target.id
-    axios({
-      method: "PUT",
-      url: `${apiURL}/recipes/${e.target.id}`,
-      data: {
-        name: this.state.newRecipeName,
-        directions: this.state.newDirections,
-        heading:headingId
-      }
-    })
-    .then(res => {
-      this.setState(
-        {
-          recipes: res.data
-        }
-      )
-      this.props.history.push(`/contents/${headingId}/${recipeId}`)
-    });
-  }
-
-  handleNewIngredient = (e) => {
-    e.preventDefault()
-    let headingId = e.target.getAttribute('data-heading-id')
-    let recipeId = e.target.id
-    axios ({
-      method: "POST",
-      url: `${apiURL}/recipes/${e.target.id}/new-ingredient/`,
-      data: {
-        ingredient: this.state.newIngredient
-      }
-    })
-    .then ( () => {
-      this.setState (
-        {
-          newIngredient: ''
-        }
-      )
-      this.getRecipes();
-      this.props.history.push(`/contents/${headingId}/${recipeId}`);
-    });
-  };
-
-  deleteRecipe = (e) => {
-    e.preventDefault()
-    // let headingId = e.target.getAttribute('data-heading-id')
-    axios
-      .delete(`${apiURL}/recipes/${e.target.id}`)
-      .then(res => {
-        this.setState(
-          {
-            recipes: res.data
-          }
-        )
-        this.getRecipes()
-        this.props.history.push(`/contents`)
-      })
-  }
-
-  deleteIngredient = (e) => {
-    // e.preventDefault();
-    let headingId = e.target.getAttribute('data-heading-id')
-    let recipeId = e.target.getAttribute('recipe-id')
-    let ingredientId = e.target.getAttribute('data-ingredient-id')
-    axios
-      .delete(`${apiURL}/recipes/${recipeId}/delete-ingredient/${ingredientId}`)
-      .then ( res => {
-        this.setState(
-          {
-            recipes: res.data
-          }
-        )
-        this.props.history.push(`/contents/${headingId}/${recipeId}`);
-      })
-  }
-
-  getContents = () => {
-    axios
-      .get(`${apiURL}/contents`)
-      .then(res => {
-        this.setState(
-          {
-            contents: res.data
-          }
-        )
-      })
-  }
-
-  getContent = () => {
-    axios
-      .get(`${apiURL}/contents/:id`)
-      .then(res => {
-        this.setState(
-          {
-            contents: res.data
-          }
-        )
-      })
-  }
-
-  getUsers = () => {
-    axios
-      .get(`${apiURL}/users`)
-      .then(res => {
-        this.setState(
-          {
-            currentUser: res.data
-          }
-        )
-      })
-  }
-
-  getUser = (e) => {
-    e.preventDefault()
-    axios
-      .get(`${apiURL}/users/${e.target.id}`)
-      .then(res => {
-        this.props.history.push('/')
-        this.setState(
-          {
-            currentUser: res.data
-          }
-        )
-      })
-      .catch(error => console.log('error', error))
-  }
-
-  responseGoogle = (response) => {
-    axios({
-      method: 'post',
-      url: `${apiURL}/users`,
-      data: {
-        email: response.profileObj.email
-      }
-    })
-    .then(res => {
-      this.setState({
+  responseGoogle = (response) => {  //working
+    axios.post (`${apiURL}/users`,{
+      email: response.profileObj.email
+    }).then ( res => {
+      this.setState ({
         users: res.data,
         user_id: res.data[0]._id,
         currentUser: res.data[0].email
@@ -204,222 +66,266 @@ export default withRouter(class App extends Component {
     })
   }
    
-  postUser = (e) => {
-    e.preventDefault()
-    axios({
-      method: 'post',
-      url: `${apiURL}/users`,
-      data: {
-        email: this.state.currentUser
-      }
+  postUser = (e) => {  //working
+    e.preventDefault ()
+    axios.post (`${apiURL}/users`, {
+      email: this.state.currentUser
+    }).then ( res => {
+      this.setState ({
+        users: res.data,
+        user_id: res.data[res.data.findIndex(user => {
+          return user.email === this.state.currentUser
+        })]._id
+      })
+      this.props.history.push(`/user/${this.state.user_id}`)
     })
+  }
+
+  putUser = (e) => {  //working
+    e.preventDefault ()
+    let putUserData = {}
+    if (this.state.newFirstName) {
+      putUserData = {
+        ...putUserData,
+        firstName: this.state.newFirstName
+      }
+    } if (this.state.newLastName) {
+      putUserData = {
+        ...putUserData,
+        lastName: this.state.newLastName
+      }
+    } if (this.state.newCarbs) {
+      putUserData = {
+        ...putUserData,
+        avoidCarbs: this.state.newCarbs
+      }
+    } if (this.state.newDairy) {
+      putUserData = {
+        ...putUserData,
+        avoidDairy: this.state.newDairy
+      }
+    } if (this.state.newEggs) {
+      putUserData = {
+        ...putUserData,
+        avoidEggs: this.state.newEggs
+      }
+    } if (this.state.newGluten) {
+      putUserData = {
+        ...putUserData,
+        avoidGluten: this.state.newGluten
+      }
+    } if (this.state.newMeat) {
+      putUserData = {
+        ...putUserData,
+        avoidMeat: this.state.newMeat
+      }
+    } if (this.state.newNuts) {
+      putUserData = {
+        ...putUserData,
+        avoidNuts: this.state.newNuts
+      }
+    } if (this.state.newQuinoa) {
+      putUserData = {
+        ...putUserData,
+        avoidQuinoa: this.state.newQuinoa
+      }
+    } if (this.state.newShellfish) {
+      putUserData = {
+        ...putUserData,
+        avoidShellfish: this.state.newShellfish
+      }
+    } if (this.state.newSpicy) {
+      putUserData = {
+        ...putUserData,
+        avoidSpicy: this.state.newSpicy
+      }
+    }
+    axios.put (`${apiURL}/users/${e.target.id}`, 
+      putUserData
+    ).then ( res => {
+      this.setState ({
+        users: res.data,
+        newFirstName:'',
+        newLastName:'',
+        newCarbs:'',
+        newDairy:'',
+        newEggs:'',
+        newGluten:'',
+        newMeat:'',
+        newNuts:'',
+        newQuinoa:'',
+        newShellfish:'',
+        newSpicy: ''
+      })
+    })
+  }
+
+  deleteUser = (e) => {  //working
+    e.preventDefault ()
+    axios.delete (`${apiURL}/users/${e.target.id}`)
+      .then ( res => {
+        this.props.history.push ('/')
+        this.setState ({
+          users: res.data,
+          currentUser: ''
+        })
+      })
+  }
+
+  getContents = () => {  //working
+    axios.get (`${apiURL}/contents`)
+      .then ( res => {
+        this.setState({
+          contents: res.data
+        })
+      })
+  }
+
+  getContent = () => {  //working
+    axios.get(`${apiURL}/contents/:id`)
+      .then ( res => {
+        this.setState({
+          contents: res.data
+        })
+      })
+  }
+
+  putContent = (e) => {  //working
+    e.preventDefault ()
+    axios.put (`${apiURL}/contents/${e.target.id}`, {
+      heading:this.state.newHeading
+    })
+    .then ( res => {
+      this.setState ({
+        contents: res.data
+      })
+      this.props.history.push ('/contents')
+    })
+  }
+
+  getRecipes = () => { //working
+    axios.get (`${apiURL}/recipes`)
       .then(res => {
         this.setState({
-          users: res.data,
-          user_id: res.data[res.data.findIndex(user => {
-            return user.email === this.state.currentUser
-          })]._id
+          recipes: res.data
         })
-        this.props.history.push(`/user/${this.state.user_id}`)
       })
   }
 
-  putUser = (e) => {
-    e.preventDefault()
-    if (this.state.newFirstName) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { firstName: this.state.newFirstName }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newFirstName: ''
-          }
-        )
-      })
-    } if (this.state.newLastName) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { lastName: this.state.newLastName }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newLastName: ''
-          }
-        )
-      })
-    } if (this.state.newCarbs) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { avoidCarbs: this.state.newCarbs }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newCarbs: ''
-          }
-        )
-      })
-    } if (this.state.newDairy) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { avoidDairy: this.state.newDairy }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newDairy: ''
-          }
-        )
-      })
-    } if (this.state.newEggs) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { avoidEggs: this.state.newEggs }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newEggs: ''
-          }
-        )
-      })
-    } if (this.state.newGluten) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { avoidGluten: this.state.newGluten }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newGluten: ''
-          }
-        )
-      })
-    } if (this.state.newMeat) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { avoidMeat: this.state.newMeat }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newMeat: ''
-          }
-        )
-      })
-    } if (this.state.newNuts) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { avoidNuts: this.state.newNuts }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newNuts: ''
-          }
-        )
-      })
-    } if (this.state.newQuinoa) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { avoidQuinoa: this.state.newQuinoa }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newQuinoa: ''
-          }
-        )
-      })
-    } if (this.state.newShellfish) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { avoidShellfish: this.state.newShellfish }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newShellfish: ''
-          }
-        )
-      })
-    } if (this.state.newSpicy) {
-      axios({
-        method: 'put',
-        url: `${apiURL}/users/${e.target.id}`,
-        data: { avoidSpicy: this.state.newSpicy }
-      })
-      .then(res => {
-        this.setState(
-          {
-            users: res.data,
-            newSpicy: ''
-          }
-        )
-      })
-    }
+  postRecipe = (e) => {  //working
+    e.preventDefault ()
+    axios.post (`${apiURL}/recipes`,{
+        name: this.state.newRecipeName,
+        heading: this.state.newHeading,
+        submittedBy: this.state.currentUser
+    }).then ( res => {
+      this.setState ( prevState => ({
+        recipes: [...prevState.recipes, res.data],
+      }))
+      this.props.history.push (`/contents/${res.data.heading._id}/${res.data._id}`)
+    })
   }
 
-  deleteUser = (e) => {
+  putRecipe = (e) => {  //working
     e.preventDefault()
-    axios
-      .delete(`${apiURL}/users/${e.target.id}`)
-      .then(res => {
-        this.props.history.push('/')
-        this.setState(
-          {
-            users: res.data,
-            currentUser: ''
-          }
-        )
-      })
-  }
-  
-  handleFormChange = (e) => {
-    this.setState(
-      {
-        [e.target.name]: e.target.value
+    let headingId = e.target.getAttribute('data-heading-id')
+    let recipeId = e.target.id
+    let putRecipeData = {}
+    if (this.state.newRecipeName !== '') {
+      putRecipeData = {
+        ...putRecipeData,
+        name: this.state.newRecipeName
       }
-    )
+    } if (this.state.newDirections !== '') {
+      putRecipeData = {
+        ...putRecipeData,
+        directions: this.state.newDirections
+      }
+    }
+    axios.put (`${apiURL}/recipes/${e.target.id}`,
+      putRecipeData  
+  ).then ( res => {
+      this.setState({
+        recipes: res.data,
+        newRecipeName:'',
+        newDirections:'',
+      })
+      this.props.history.push(`/contents/${headingId}/${recipeId}`)
+    })
+  }
+
+  deleteRecipe = (e) => {
+    e.preventDefault ()
+    axios.delete (`${apiURL}/recipes/${e.target.id}`)
+      .then ( res => {
+        this.setState ({
+          recipes: res.data
+        })
+        this.props.history.push(`/contents`)
+      })
+  }
+
+  // postIngredient = (e) => {
+  //   // e.preventDefault ()
+  //   let headingId = e.target.getAttribute('data-heading-id')
+  //   let recipeId = e.target.id
+  //   axios ({
+  //     method: "POST",
+  //     url: `${apiURL}/recipes/${e.target.id}/new-ingredient`,
+  //     data: {
+  //       ingredient: this.state.newIngredient
+  //     }
+  //   }).then ( res => {
+  //     this.setState ({
+  //       // recipes: res.data,
+  //       newIngredient: ''
+  //     })
+  //     // this.props.history.push(`/contents/${headingId}/${recipeId}`);
+  //   })
+  // }
+
+  // deleteIngredient = (e) => {
+    // e.preventDefault();
+  //   let headingId = e.target.getAttribute('data-heading-id')
+  //   let recipeId = e.target.getAttribute('recipe-id')
+  //   let ingredientId = e.target.getAttribute('data-ingredient-id')
+  //   axios
+  //     .delete(`${apiURL}/recipes/${recipeId}/delete-ingredient/${ingredientId}`)
+  //     .then ( res => {
+  //       this.setState(
+  //         {
+  //           recipes: res.data
+  //         }
+  //       )
+  //       this.props.history.push(`/contents/${headingId}/${recipeId}`);
+  //     })
+  // }
+
+  handleFormChange = (e) => {
+    console.log(e.target.name, e.target.value)
+    this.setState ({
+      [e.target.name]: e.target.value
+    })
   }
 
   handleLogout = () => {
     if (this.state.currentUser !== '') {
-      this.setState(
-        {
-          currentUser:''
-        }
-      )
+      this.setState({
+        currentUser:''
+      })
     }
     this.props.history.push('/')
   }
 
-  componentDidMount() {
-    this.getContents()
-    this.getRecipes()
+  handleContentHeading = (newHeading) => {
+    this.setState ({
+      currentHeading: newHeading
+    })
+  }
+
+  componentDidMount () {
+    this.getContents ()
+    this.getRecipes ()
   }
   
   render() {  
@@ -428,7 +334,7 @@ export default withRouter(class App extends Component {
         <header className="App-header">
           <div>
             <Link to="/contents">
-              Table of Contents
+              Table of Contents {this.state.currentHeading}
             </Link>
           </div>
           <div>
@@ -451,7 +357,7 @@ export default withRouter(class App extends Component {
                 />
               }
             />
-            <Route exact path='/'
+            <Route exact path='/' //working
               render={
                 () => <Login
                   users={this.state.users}
@@ -461,7 +367,7 @@ export default withRouter(class App extends Component {
                 />
               }
             />
-            <Route path='/user/:id'
+            <Route path='/user/:id' //working
               render={
                 routerProps => <User
                   {...routerProps}
@@ -471,7 +377,7 @@ export default withRouter(class App extends Component {
                   handleDelete={this.deleteUser}
                 />
               }
-            /><Route exact path='/contents'
+            /><Route exact path='/contents' //working
               render={
                 () => <Contents
                   contents={this.state.contents}
@@ -484,6 +390,8 @@ export default withRouter(class App extends Component {
                   {...routerProps}
                   contents={this.state.contents}
                   recipes={this.state.recipes}
+                  handleFormChange={this.handleFormChange}
+                  handlePutContent={this.putContent}
                 />
               }
             />
@@ -491,16 +399,15 @@ export default withRouter(class App extends Component {
               render={
                 routerProps => <RecipeDetails
                   {...routerProps}
-                  handleDeleteRecipe={this.deleteRecipe}
-                  recipes={this.state.recipes}
-                  newContents={this.state.newContents}
                   currentUser={this.state.currentUser}
-                  handlePutRecipe={this.putRecipe}
-                  handleFormChange={this.handleFormChange}
+                  recipes={this.state.recipes}
                   contents={this.state.contents}
-                  handleNewIngredient={this.handleNewIngredient}
-                  newIngredientDescription={this.state.newIngredientDescription}
-                  deleteIngredient={this.deleteIngredient}
+                  handleFormChange={this.handleFormChange}
+                  handlePutRecipe={this.putRecipe}
+                  handleDeleteRecipe={this.deleteRecipe}
+                  handlePostIngredient={this.postIngredient}
+                  handleNewIngredient={this.state.newIngredient}
+                  handleDeleteIngredient={this.deleteIngredient}
                 />
               }
             />
