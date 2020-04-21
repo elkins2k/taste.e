@@ -198,7 +198,7 @@ export default withRouter(class App extends Component {
         contents: res.data
       })
       this.getRecipes()
-      this.props.history.push ('/contents')
+      // this.props.history.push ('/contents')
     })
   }
 
