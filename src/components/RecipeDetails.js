@@ -15,6 +15,7 @@ export default function RecipeDetails (props) {
         recipeId={recipeDetail._id}
         handleDeleteIngredient={props.handleDeleteIngredient}
         submittedBy={recipeDetail.submittedBy}
+        currentUser={props.currentUser}
       />
     )
     listOfIngredients.push(ingredientItem)
