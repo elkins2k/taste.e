@@ -197,6 +197,7 @@ export default withRouter(class App extends Component {
       this.setState ({
         contents: res.data
       })
+      this.getRecipes()
       this.props.history.push ('/contents')
     })
   }
