@@ -10,8 +10,8 @@ import RecipeDetails from './components/RecipeDetails'
 import NewRecipe from './components/NewRecipe'
 import Logout from './components/Logout'
 
-// const apiURL = process.env.REACT_APP_BACKEND_APP_URL || 'http://localhost:8080/api' 
-const apiURL = 'http://localhost:8080/api' || process.env.REACT_APP_BACKEND_APP_URL
+const apiURL = process.env.REACT_APP_BACKEND_APP_URL || 'http://localhost:8080/api' 
+// const apiURL = 'http://localhost:8080/api' || process.env.REACT_APP_BACKEND_APP_URL
 
 export default withRouter(class App extends Component {
   constructor(props) {
